@@ -1,352 +1,373 @@
 
 import tkinter as tk
 from tkinter import ttk, messagebox
+from datetime import date
 import funkcijas
 
 
-# Galvenā loga izveide
-root = tk.Tk()
-root.title("Pazudušās mantas")
-root.geometry("950x650")
-root.configure(bg="#1E1E2E")
+# Dizaina krāsas
+FONS = "#E5E7EB"
+PANELIS = "#F8FAFC"
+POGU_KRASA = "#64748B"
+POGU_AKTIVA = "#475569"
+TEKSTS = "#1F2937"
+BALTS = "#FFFFFF"
 
 
-# Krāsas
-FONS = "#1E1E2E"
-POGAS = "#45475A"
-AKTIVS = "#7C3AED"
-TEKSTS = "#FFFFFF"
-IEVADE = "#313244"
+def loga_dizains(logs):
+    logs.configure(bg=FONS)
 
 
-# Virsraksts
-virsraksts = tk.Label(
-    root,
-    text="Pazudušo mantu sistēma",
-    font=("Arial", 22, "bold"),
-    bg=FONS,
-    fg=TEKSTS
-)
-virsraksts.pack(pady=20)
+def pogas_dizains(poga):
+    poga.configure(
+        bg=POGU_KRASA,
+        fg=BALTS,
+        activebackground=POGU_AKTIVA,
+        activeforeground=BALTS,
+        font=("Arial", 10),
+        relief="flat",
+        bd=0,
+        cursor="hand2",
+        padx=10,
+        pady=7
+    )
 
 
-# Izvēlnes rāmis
-izvelne = tk.Frame(root, bg=FONS)
-izvelne.pack(pady=10)
-
-
-# Satura rāmis
-saturs = tk.Frame(
-    root,
-    bg="#28283A",
-    bd=0
-)
-saturs.pack(fill="both", expand=True, padx=25, pady=15)
-
-
-# Funkcija satura notīrīšanai
-def notirit_saturu():
-    for elements in saturs.winfo_children():
-        elements.destroy()
-
-
-# Tabulas izveide
-def izveidot_tabulu(kolonnas, dati):
-
-    tabulas_ramis = tk.Frame(saturs, bg="#28283A")
-    tabulas_ramis.pack(fill="both", expand=True, padx=10, pady=10)
+def tabulas_logs(nosaukums, kolonnas, rindas):
+    logs = tk.Toplevel(root)
+    logs.title(nosaukums)
+    logs.geometry("700x400")
+    loga_dizains(logs)
 
     stils = ttk.Style()
     stils.theme_use("clam")
 
     stils.configure(
         "Treeview",
-        background="#313244",
-        foreground="white",
-        fieldbackground="#313244",
-        rowheight=30
+        background=BALTS,
+        foreground=TEKSTS,
+        rowheight=30,
+        fieldbackground=BALTS,
+        font=("Arial", 10)
     )
 
     stils.configure(
         "Treeview.Heading",
-        background="#45475A",
-        foreground="white",
-        font=("Arial", 10, "bold")
+        background=POGU_KRASA,
+        foreground=BALTS,
+        font=("Arial", 10, "bold"),
+        relief="flat"
     )
 
     stils.map(
         "Treeview",
-        background=[("selected", "#7C3AED")]
+        background=[("selected", "#CBD5E1")],
+        foreground=[("selected", TEKSTS)]
     )
 
     tabula = ttk.Treeview(
-        tabulas_ramis,
+        logs,
         columns=kolonnas,
         show="headings"
     )
 
     for kolonna in kolonnas:
         tabula.heading(kolonna, text=kolonna)
-        tabula.column(kolonna, width=130)
-
-    for rinda in dati:
-        tabula.insert("", "end", values=rinda)
-
-    tabula.pack(fill="both", expand=True)
-
-
-# Poga
-def izveidot_pogu(teksts, komanda):
-    return tk.Button(
-        izvelne,
-        text=teksts,
-        command=komanda,
-        bg=POGAS,
-        fg=TEKSTS,
-        activebackground=AKTIVS,
-        activeforeground=TEKSTS,
-        font=("Arial", 10, "bold"),
-        relief="flat",
-        cursor="hand2",
-        padx=12,
-        pady=8
-    )
-
-
-# Visas mantas
-def redzet_mantas():
-
-    notirit_saturu()
-
-    tk.Label(
-        saturs,
-        text="Visas mantas",
-        font=("Arial", 18, "bold"),
-        bg="#28283A",
-        fg=TEKSTS
-    ).pack(pady=15)
-
-    try:
-        mantas = funkcijas.apskatit_mantas()
-
-        dati = [
-            (
-                m[0],
-                m[1],
-                m[2],
-                m[4],
-                m[5],
-                m[6]
-            )
-            for m in mantas
-        ]
-
-        izveidot_tabulu(
-            ("ID", "Nosaukums", "Apraksts",
-             "Vieta", "Datums", "Statuss"),
-            dati
+        tabula.column(
+            kolonna,
+            width=700 // len(kolonnas),
+            anchor="center"
         )
 
-    except Exception as e:
-        messagebox.showerror("Kļūda", str(e))
+    tabula.pack(fill="both", expand=True, padx=15, pady=15)
+
+    for rinda in rindas:
+        tabula.insert("", "end", values=rinda)
 
 
-# Pievienot mantu
-def pievienot_mantu():
-
+def formas_logs(nosaukums, lauki, saglabat):
     logs = tk.Toplevel(root)
-    logs.title("Pievienot mantu")
-    logs.geometry("400x430")
-    logs.configure(bg=FONS)
+    logs.title(nosaukums)
+    logs.geometry("400x350")
+    loga_dizains(logs)
 
-    tk.Label(
+    ievades = []
+
+    virsraksts = tk.Label(
         logs,
-        text="Pievienot jaunu mantu",
-        font=("Arial", 17, "bold"),
+        text=nosaukums,
         bg=FONS,
-        fg=TEKSTS
-    ).pack(pady=15)
+        fg=TEKSTS,
+        font=("Arial", 15, "bold")
+    )
+    virsraksts.grid(
+        row=0,
+        column=0,
+        columnspan=2,
+        pady=15
+    )
 
-    ievades = {}
-
-    lauki = [
-        "Nosaukums",
-        "Apraksts",
-        "Kategorijas ID",
-        "Vieta",
-        "Pievienotāja ID"
-    ]
-
-    for lauks in lauki:
-
+    for i, lauks in enumerate(lauki):
         tk.Label(
             logs,
             text=lauks,
             bg=FONS,
             fg=TEKSTS,
             font=("Arial", 10)
-        ).pack(pady=3)
-
-        entry = tk.Entry(
-            logs,
-            bg=IEVADE,
-            fg=TEKSTS,
-            insertbackground=TEKSTS,
-            relief="flat",
-            font=("Arial", 11)
+        ).grid(
+            row=i + 1,
+            column=0,
+            padx=10,
+            pady=8,
+            sticky="w"
         )
-        entry.pack(padx=30, fill="x", ipady=5)
 
-        ievades[lauks] = entry
+        ievade = tk.Entry(
+            logs,
+            width=30,
+            font=("Arial", 10),
+            bg=BALTS,
+            fg=TEKSTS,
+            relief="solid",
+            bd=1
+        )
 
-    def saglabat():
+        ievade.grid(
+            row=i + 1,
+            column=1,
+            padx=10,
+            pady=8
+        )
+
+        ievades.append(ievade)
+
+    def nospiests():
+        vertibas = [ievade.get() or None for ievade in ievades]
 
         try:
-            funkcijas.pievienot_mantu(
-                ievades["Nosaukums"].get(),
-                ievades["Apraksts"].get(),
-                int(ievades["Kategorijas ID"].get()),
-                ievades["Vieta"].get(),
-                __import__("datetime").date.today().isoformat(),
-                "Pieejama",
-                int(ievades["Pievienotāja ID"].get()),
-                None
-            )
-
-            messagebox.showinfo(
-                "Gatavs",
-                "Manta veiksmīgi pievienota!"
-            )
-
-            logs.destroy()
-            redzet_mantas()
-
+            saglabat(*vertibas)
         except Exception as e:
-            messagebox.showerror("Kļūda", str(e))
+            messagebox.showerror("Kļūda", str(e), parent=logs)
+            return
 
-    tk.Button(
+        messagebox.showinfo("Gatavs", "Saglabāts", parent=logs)
+        logs.destroy()
+
+    poga = tk.Button(
         logs,
         text="Saglabāt",
-        command=saglabat,
-        bg=AKTIVS,
-        fg=TEKSTS,
-        relief="flat",
-        font=("Arial", 11, "bold"),
-        padx=20,
-        pady=8
-    ).pack(pady=20)
+        command=nospiests
+    )
+    pogas_dizains(poga)
+    poga.grid(
+        row=len(lauki) + 1,
+        column=0,
+        columnspan=2,
+        pady=20
+    )
 
 
-# Lietotāji
-def redzet_lietotajus():
+def redzet_mantas():
+    rindas = [
+        (m[0], m[1], m[5])
+        for m in funkcijas.apskatit_mantas()
+    ]
 
-    notirit_saturu()
-
-    tk.Label(
-        saturs,
-        text="Lietotāji",
-        font=("Arial", 18, "bold"),
-        bg="#28283A",
-        fg=TEKSTS
-    ).pack(pady=15)
-
-    try:
-        lietotaji = funkcijas.apskatit_lietotajus()
-
-        dati = [
-            (l[0], l[1], l[2], l[3], l[4], l[5])
-            for l in lietotaji
-        ]
-
-        izveidot_tabulu(
-            ("ID", "Vārds", "Uzvārds",
-             "E-pasts", "Klase", "Loma"),
-            dati
-        )
-
-    except Exception as e:
-        messagebox.showerror("Kļūda", str(e))
+    tabulas_logs(
+        "Mantas",
+        ("ID", "Manta", "Pievienota"),
+        rindas
+    )
 
 
-# Pieteikumi
 def redzet_pieteikumus():
+    rindas = [
+        (p[1], p[2], p[4], "Jā" if p[5] else "Nē")
+        for p in funkcijas.apskatit_pieteikumus()
+    ]
 
-    notirit_saturu()
+    tabulas_logs(
+        "Pieteikumi",
+        ("Manta", "Lietotājs", "Datums", "Apstiprināts"),
+        rindas
+    )
 
-    tk.Label(
-        saturs,
-        text="Pieteikumi",
-        font=("Arial", 18, "bold"),
-        bg="#28283A",
-        fg=TEKSTS
-    ).pack(pady=15)
 
-    try:
-        pieteikumi = funkcijas.apskatit_pieteikumus()
+def izveidot_pieteikumu():
+    formas_logs(
+        "Izveidot pieteikumu",
+        ["Mantas ID", "Lietotāja ID"],
+        lambda manta_id, lietotajs_id:
+            funkcijas.izveidot_pieteikumu(
+                manta_id,
+                lietotajs_id,
+                None,
+                date.today().isoformat()
+            )
+    )
 
-        dati = [
-            (p[0], p[1], p[2], p[4], p[5])
-            for p in pieteikumi
-        ]
 
-        izveidot_tabulu(
-            ("ID", "Manta", "Lietotājs",
-             "Datums", "Apstiprināts"),
-            dati
+def pievienot_lietotaju():
+    formas_logs(
+        "Pievienot lietotāju",
+        ["Vārds", "Uzvārds", "E-pasts", "Klase", "Loma"],
+        funkcijas.pievienot_lietotaju
+    )
+
+
+def pievienot_kategoriju():
+    formas_logs(
+        "Pievienot kategoriju",
+        ["Nosaukums"],
+        funkcijas.pievienot_kategoriju
+    )
+
+
+def pievienot_mantu():
+    formas_logs(
+        "Pievienot mantu",
+        ["Nosaukums", "Apraksts", "Kategorijas ID"],
+        lambda nosaukums, apraksts, kategorija_id:
+            funkcijas.pievienot_mantu(
+                nosaukums,
+                apraksts,
+                kategorija_id,
+                None,
+                date.today().isoformat(),
+                None,
+                None,
+                None
+            )
+    )
+
+
+def izveleties_lietotaju():
+    logs = tk.Toplevel(root)
+    logs.title("Izvēlēties lietotāju")
+    logs.geometry("300x300")
+    loga_dizains(logs)
+
+    logs.protocol("WM_DELETE_WINDOW", root.destroy)
+
+    lietotaji = funkcijas.apskatit_lietotajus()
+
+    virsraksts = tk.Label(
+        logs,
+        text="Izvēlies lietotāju",
+        bg=FONS,
+        fg=TEKSTS,
+        font=("Arial", 14, "bold")
+    )
+    virsraksts.pack(pady=12)
+
+    saraksts = tk.Listbox(
+        logs,
+        bg=BALTS,
+        fg=TEKSTS,
+        font=("Arial", 10),
+        selectbackground="#CBD5E1",
+        selectforeground=TEKSTS,
+        relief="solid",
+        bd=1
+    )
+
+    for l in lietotaji:
+        saraksts.insert("end", f"{l[1]} {l[2]}".strip())
+
+    saraksts.pack(
+        fill="both",
+        expand=True,
+        padx=15,
+        pady=10
+    )
+
+    def izvelets():
+        global lietotajs
+
+        izvele = saraksts.curselection()
+
+        if not izvele:
+            messagebox.showerror(
+                "Kļūda",
+                "Izvēlies lietotāju",
+                parent=logs
+            )
+            return
+
+        lietotajs = lietotaji[izvele[0]]
+
+        lietotaja_info.config(
+            text=f"{lietotajs[1]} {lietotajs[2]} | ID: {lietotajs[0]} | Klase: {lietotajs[4] or '-'}"
         )
 
-    except Exception as e:
-        messagebox.showerror("Kļūda", str(e))
+        logs.destroy()
+        root.deiconify()
+
+    poga = tk.Button(
+        logs,
+        text="Izvēlēties",
+        command=izvelets
+    )
+    pogas_dizains(poga)
+    poga.pack(pady=10)
 
 
-# Galvenā lapa
-def sakums():
+lietotajs = None
 
-    notirit_saturu()
+root = tk.Tk()
+root.title("Pazudušās mantas")
+root.geometry("400x450")
+root.configure(bg=FONS)
 
-    tk.Label(
-        saturs,
-        text="Laipni lūdzam!",
-        font=("Arial", 22, "bold"),
-        bg="#28283A",
-        fg=TEKSTS
-    ).pack(pady=40)
+root.withdraw()
 
-    tk.Label(
-        saturs,
-        text="Šeit vari apskatīt un pārvaldīt pazudušās un atrastās mantas.",
-        font=("Arial", 12),
-        bg="#28283A",
-        fg="#CBA6F7"
-    ).pack(pady=10)
+# Galvenais virsraksts
+virsraksts = tk.Label(
+    root,
+    text="Pazudušās mantas",
+    bg=FONS,
+    fg=TEKSTS,
+    font=("Arial", 19, "bold")
+)
+virsraksts.pack(pady=20)
 
-    try:
-        mantas = funkcijas.apskatit_mantas()
-        skaits = len(mantas)
+# Galvenās pogas
+pogas = [
+    ("Redzēt mantas", redzet_mantas),
+    ("Redzēt pieteikumus", redzet_pieteikumus),
+    ("Izveidot pieteikumu", izveidot_pieteikumu),
+    ("Pievienot lietotāju", pievienot_lietotaju),
+    ("Pievienot kategoriju", pievienot_kategoriju),
+    ("Pievienot mantu", pievienot_mantu),
+]
 
-        tk.Label(
-            saturs,
-            text=f"Kopā reģistrētas mantas: {skaits}",
-            font=("Arial", 14, "bold"),
-            bg="#28283A",
-            fg=TEKSTS
-        ).pack(pady=20)
+for teksts, komanda in pogas:
+    poga = tk.Button(
+        root,
+        text=teksts,
+        command=komanda,
+        width=25
+    )
 
-    except Exception as e:
-        messagebox.showerror("Kļūda", str(e))
+    pogas_dizains(poga)
+    poga.pack(pady=6)
 
+# Lietotāja informācija apakšā
+lietotaja_info = tk.Label(
+    root,
+    bg="#D1D5DB",
+    fg=TEKSTS,
+    font=("Arial", 9),
+    padx=5,
+    pady=10
+)
 
-# Izvēlnes pogas
-izveidot_pogu("Sākums", sakums).pack(side="left", padx=5)
-izveidot_pogu("Visas mantas", redzet_mantas).pack(side="left", padx=5)
-izveidot_pogu("Pievienot mantu", pievienot_mantu).pack(side="left", padx=5)
-izveidot_pogu("Lietotāji", redzet_lietotajus).pack(side="left", padx=5)
-izveidot_pogu("Pieteikumi", redzet_pieteikumus).pack(side="left", padx=5)
+lietotaja_info.pack(
+    side="bottom",
+    fill="x",
+    pady=10
+)
 
+izveleties_lietotaju()
 
-# Atvērt sākuma lapu
-sakums()
-
-
-# Programmas palaišana
 root.mainloop()
