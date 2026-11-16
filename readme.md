@@ -138,7 +138,7 @@ Tajā redzams:
 
 Ja fotogrāfijas nav, tiek parādīts teksts „Attēls nav pievienots”.
 
-## 6. Mantu meklēšana (41)
+## 6. Mantu meklēšana 
 
 Mantu saraksta augšdaļā atrodas meklēšanas lauks.
 
@@ -158,7 +158,7 @@ Izdzēšot meklēšanas tekstu, atkal parādās visas mantas.
 
 Meklēšana darbojas kopā ar kategoriju filtrēšanu.
 
-## 7. Kategoriju filtrēšana (42)
+## 7. Kategoriju filtrēšana 
 
 Kategorijas tiek glabātas tabulā `kategorijas`.
 
@@ -178,7 +178,7 @@ Kategoriju filtrēšana un meklēšana darbojas vienlaikus.
 
 Piemēram, izvēloties kategoriju „Elektronika” un ierakstot meklēšanas laukā „telefons”, tiek parādīti tikai elektronikas kategorijas telefoni.
 
-## 8. Mantu fotogrāfijas (43)
+## 8. Mantu fotogrāfijas 
 
 Katrai mantai iespējams pievienot fotogrāfiju.
 
@@ -201,7 +201,7 @@ Fotogrāfiju var nomainīt vai noņemt.
 
 Ja attēla fails vairs nav pieejams, programma turpina darboties un parāda paziņojumu.
 
-## 9. Mantu rediģēšana (47)
+## 9. Mantu rediģēšana 
 
 Administratoram ir iespēja rediģēt esošās mantas.
 
@@ -225,7 +225,7 @@ Mantas ID un sākotnējais pievienošanas datums netiek mainīti.
 
 Nospiežot „Atcelt”, izmaiņas netiek saglabātas.
 
-## 10. Mantu dzēšana (46)
+## 10. Mantu dzēšana
 
 Administratoram ir iespēja dzēst mantas.
 
@@ -301,7 +301,7 @@ Tabulā redzams:
 
 Šī informācija tiek iegūta, savienojot tabulas `pieteikumi`, `mantas` un `lietotaji`.
 
-## 14. Pieteikumu statusi (45)
+## 14. Pieteikumu statusi
 
 Katram pieteikumam ir viens no trim statusiem:
 
@@ -344,7 +344,7 @@ Noraidot pieteikumu:
 
 Ja manta vēl nav atdota un tai nav cita apstiprināta pieteikuma, tā paliek pieejama.
 
-## 15. Pieteikumu dzēšana (46)
+## 15. Pieteikumu dzēšana
 
 Administratoram ir iespēja dzēst pieteikumus.
 
