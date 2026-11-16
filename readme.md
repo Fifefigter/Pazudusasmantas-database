@@ -1,137 +1,524 @@
 
 # Pazudušās mantas
 
-Programma pazudušo un atrasto mantu uzskaitei. Dati glabājas SQLite datubāzē `mantas.db`, logs veidots ar Tkinter.
+## 1. Aplikācijas mērķis
 
-## Palaišana
+„Pazudušās mantas” ir aplikācija, kas paredzēta skolas vai organizācijas pazudušo un atrasto mantu uzskaitei.
 
-```bash
-python main.py
-```
+Aplikācijas galvenais mērķis ir ļaut lietotājiem apskatīt atrastās mantas, atrast sev piederošas mantas un pieteikties to saņemšanai.
 
-Nepieciešams Python 3 (Tkinter un sqlite3 ir iekļauti standarta bibliotēkā).
+Visa informācija tiek glabāta vienā kopīgā SQLite datubāzē `mantas.db`.
 
-## Lietotāji
+## 2. Lietotāji un piekļuves tiesības
 
-Palaižot programmu, vispirms atveras logs **Izvēlēties lietotāju**. Pēc izvēles atveras galvenais logs, kura apakšā vienmēr redzams izvēlētā lietotāja vārds, ID un klase.
+Aplikācijā ir divu veidu lietotāji:
 
-Datubāzē jau ir divi lietotāji:
+### Administrators
 
-| ID | Vārds | Loma |
-|---|---|---|
-| 1 | Admin | admin |
-| 2 | test | – |
+Administrators var:
+- Apskatīt visas mantas.
+- Pievienot jaunas mantas.
+- Rediģēt mantu informāciju.
+- Dzēst mantas.
+- Apskatīt visus pieteikumus.
+- Apstiprināt vai noraidīt pieteikumus.
+- Dzēst pieteikumus.
+- Pievienot lietotājus.
+- Pievienot kategorijas.
 
-## Iespējas
+### Parastais lietotājs
 
-- **Redzēt mantas** – visu mantu saraksts ar ID un pievienošanas datumu
-- **Redzēt pieteikumus** – visi pieteikumi (manta, lietotājs, datums, apstiprināts)
-- **Izveidot pieteikumu** – pieteikties uz mantu (mantas ID, lietotāja ID)
-- **Pievienot lietotāju** – vārds, uzvārds, e-pasts, klase, loma
-- **Pievienot kategoriju** – nosaukums
-- **Pievienot mantu** – nosaukums, apraksts, kategorijas ID
+Parastais lietotājs var:
+- Apskatīt visas pieejamās mantas.
+- Meklēt mantas pēc nosaukuma.
+- Filtrēt mantas pēc kategorijām.
+- Apskatīt mantu aprakstus un fotogrāfijas.
+- Izveidot pieteikumu uz mantu.
+- Apskatīt savus pieteikumus un to statusus.
 
-Mantai un pieteikumam datums tiek ielikts automātiski (šodiena).
+Parastais lietotājs nedrīkst mainīt citu lietotāju datus, rediģēt mantas vai mainīt pieteikumu statusus.
 
-## Plānotie uzlabojumi
+## 3. Lietotāja izvēle
 
-### 41. Mantu meklēšana
+Atverot programmu, parādās logs „Izvēlēties lietotāju”.
 
-Mantu sarakstā būs pieejams meklēšanas lauks.
+Tajā tiek parādīti visi datubāzē reģistrētie lietotāji.
 
-- Meklēšana notiks pēc mantas nosaukuma.
-- Būs iespējams meklēt arī pēc daļēja nosaukuma.
-- Meklēšana nebūs atkarīga no lielajiem un mazajiem burtiem.
-- Rezultāti automātiski atjaunosies pēc meklēšanas.
-- Ja manta netiks atrasta, tiks parādīts paziņojums „Mantas nav atrastas”.
-- Izdzēšot meklēšanas tekstu, atkal būs redzams pilns mantu saraksts.
+Katram lietotājam tiek parādīts:
+- Vārds.
+- Uzvārds.
+- ID.
 
-### 42. Kategoriju filtrēšana
+Lietotājs izvēlas savu profilu un nospiež „Izvēlēties”.
 
-Mantu sarakstā būs iespējams atlasīt mantas pēc to kategorijas.
+Pēc izvēles programma:
+1. Nolasa lietotāja ID.
+2. Iegūst lietotāja vārdu, uzvārdu un klasi.
+3. Nosaka lietotāja lomu.
+4. Atver galveno logu.
+5. Saglabā informāciju par pašreizējo lietotāju programmas darbības laikā.
 
-- Virs mantu saraksta būs kategoriju izvēles lauks.
-- Kategorijas tiks ielādētas no datubāzes tabulas `kategorijas`.
-- Izvēloties kategoriju, tiks parādītas tikai tai piederošās mantas.
-- Būs pieejama izvēle „Visas kategorijas”.
-- Ja izvēlētajā kategorijā nebūs mantu, tiks parādīts atbilstošs paziņojums.
-- Kategoriju filtrēšanu varēs izmantot kopā ar mantu meklēšanu.
+Galvenā loga apakšā vienmēr ir redzams izvēlētā lietotāja vārds, ID un klase.
 
-### 43. Mantu attēli
+## 4. Galvenais logs
 
-Pievienojot jaunu mantu, būs iespējams pievienot arī tās fotogrāfiju.
+Galvenajā logā ir šādas funkcijas:
 
-- Mantas pievienošanas logā būs poga „Izvēlēties attēlu”.
-- Nospiežot pogu, atvērsies datora failu izvēles logs.
-- Būs iespējams izvēlēties attēlu no datora.
-- Izvēlētā attēla atrašanās vieta tiks saglabāta datubāzes laukā `foto`.
-- Apskatot mantas informāciju, būs redzama tās fotogrāfija.
-- Būs iespējams arī nomainīt vai noņemt pievienoto attēlu.
-- Ja attēls nav pievienots, programma parādīs tekstu „Attēls nav pievienots”.
-- Programma pārbaudīs, vai izvēlētais attēls eksistē.
+1. Redzēt mantas.
+2. Redzēt pieteikumus.
+3. Izveidot pieteikumu.
+4. Pievienot lietotāju.
+5. Pievienot kategoriju.
+6. Pievienot mantu.
 
-### 45. Pieteikumu statuss
+Administratoram ir pieejamas visas funkcijas.
 
-Katram pieteikumam būs atsevišķs statuss, kas parādīs, kādā stadijā atrodas pieteikums.
+Parastajam lietotājam pieejamas tikai tās funkcijas, kuras atļautas viņa lomai.
 
-Būs pieejami trīs statusi:
+## 5. Mantu datubāzes darbība
 
-- **Gaida** – pieteikums ir izveidots un vēl nav izskatīts.
-- **Apstiprināts** – administrators ir apstiprinājis pieteikumu.
-- **Noraidīts** – administrators ir noraidījis pieteikumu.
+Visas atrastās mantas tiek glabātas tabulā `mantas`.
 
-Darbības princips:
+Katram mantas ierakstam ir:
+- `id` – unikāls mantas ID.
+- `nosaukums` – mantas nosaukums.
+- `apraksts` – mantas apraksts.
+- `kategorija_id` – kategorijas ID.
+- `vieta` – atrašanas vieta.
+- `datums` – pievienošanas datums.
+- `statuss` – mantas pašreizējais statuss.
+- `pievienoja_id` – lietotāja ID, kurš pievienoja mantu.
+- `foto` – fotogrāfijas atrašanās vieta.
 
-- Izveidojot jaunu pieteikumu, tā statuss automātiski būs „Gaida”.
-- Administrators varēs apskatīt visus pieteikumus.
-- Administrators varēs mainīt pieteikuma statusu uz „Apstiprināts” vai „Noraidīts”.
-- Statuss tiks saglabāts SQLite datubāzē.
-- Pieteikumu sarakstā būs redzams mantas nosaukums, lietotāja vārds, datums un statuss.
+Mantas ID tiek izveidots automātiski.
 
-### 46. Dzēšanas funkcija
+### 5.1. Mantas pievienošana
 
-Aplikācijā būs iespējams dzēst nevajadzīgas mantas un pieteikumus.
+Administrators nospiež „Pievienot mantu”.
 
-Darbības princips:
+Atveras forma ar laukiem:
+- Nosaukums.
+- Apraksts.
+- Kategorija.
+- Atrašanās vieta.
+- Fotogrāfija.
 
-- Mantu sarakstā būs poga „Dzēst mantu”.
-- Pieteikumu sarakstā būs poga „Dzēst pieteikumu”.
-- Pirms dzēšanas programma parādīs apstiprinājuma logu.
-- Ja lietotājs izvēlēsies „Nē”, nekas netiks dzēsts.
-- Ja lietotājs izvēlēsies „Jā”, izvēlētais ieraksts tiks dzēsts no datubāzes.
-- Pēc dzēšanas saraksts automātiski atjaunosies.
-- Dzēšanas funkcija būs pieejama tikai administratoram.
-- Programma pārbaudīs, vai mantai nav saistītu pieteikumu, lai novērstu datubāzes kļūdas.
+Nospiežot „Saglabāt”:
+1. Tiek pārbaudīts nosaukums.
+2. Tiek pārbaudīta izvēlētā kategorija.
+3. Tiek iegūts pašreizējā lietotāja ID.
+4. Tiek pievienots šodienas datums.
+5. Mantas sākotnējais statuss tiek iestatīts uz „Pieejama”.
+6. Ieraksts tiek saglabāts tabulā `mantas`.
+7. Manta parādās kopējā mantu sarakstā.
 
-### 47. Rediģēšana
+### 5.2. Mantu apskate
 
-Aplikācijā būs iespējams rediģēt jau pievienotu mantu informāciju.
+Nospiežot „Redzēt mantas”, tiek parādītas visas datubāzē esošās mantas.
 
-Darbības princips:
+Tabulā redzams:
+- ID.
+- Nosaukums.
+- Kategorija.
+- Atrašanās vieta.
+- Pievienošanas datums.
+- Statuss.
 
-- Mantu sarakstā būs poga „Rediģēt mantu”.
-- Vispirms lietotājam būs jāizvēlas manta, kuru vēlas rediģēt.
-- Atvērsies jauns logs ar pašreizējo mantas informāciju.
-- Būs iespējams mainīt mantas nosaukumu, aprakstu, kategoriju, atrašanās vietu un attēlu.
-- Nospiežot pogu „Saglabāt”, izmaiņas tiks saglabātas SQLite datubāzē.
-- Nospiežot „Atcelt”, izmaiņas netiks saglabātas.
-- Pēc saglabāšanas mantu saraksts automātiski atjaunosies.
-- Rediģēšanas funkcija būs pieejama tikai administratoram.
+Izvēloties konkrētu mantu, atveras detalizētas informācijas logs.
 
-## Faili
+Tajā redzams:
+- Mantas nosaukums.
+- Apraksts.
+- Kategorija.
+- Atrašanās vieta.
+- Pievienošanas datums.
+- Statuss.
+- Fotogrāfija.
+- Lietotājs, kurš pievienojis mantu.
 
-- `main.py` – galvenais logs un formas
-- `funkcijas.py` – funkcijas darbam ar datubāzi
-- `mantas.db` – datubāze
+Ja fotogrāfijas nav, tiek parādīts teksts „Attēls nav pievienots”.
 
-## Datubāze
+## 6. Mantu meklēšana (41)
 
-| Tabula | Lauki |
+Mantu saraksta augšdaļā atrodas meklēšanas lauks.
+
+Lietotājs var ievadīt pilnu mantas nosaukumu vai tikai tā daļu.
+
+Piemēram:
+- „Telefons” parāda mantas, kuru nosaukumā ir šis vārds.
+- „Atslē” parāda mantas, kuru nosaukumā ir šī teksta daļa.
+
+Meklēšana darbojas neatkarīgi no lielajiem un mazajiem burtiem.
+
+Rezultāti atjaunojas automātiski, kamēr lietotājs raksta.
+
+Ja nekas nav atrasts, tiek parādīts „Mantas nav atrastas”.
+
+Izdzēšot meklēšanas tekstu, atkal parādās visas mantas.
+
+Meklēšana darbojas kopā ar kategoriju filtrēšanu.
+
+## 7. Kategoriju filtrēšana (42)
+
+Kategorijas tiek glabātas tabulā `kategorijas`.
+
+Katrai kategorijai ir:
+- `id` – unikāls kategorijas ID.
+- `nosaukums` – kategorijas nosaukums.
+
+Mantu sarakstā atrodas kategoriju izvēles lauks.
+
+Izvēloties kategoriju, tiek parādītas tikai tās mantas, kuru `kategorija_id` sakrīt ar izvēlēto kategoriju.
+
+Pieejama arī izvēle „Visas kategorijas”.
+
+Izvēloties to, tiek parādītas visas mantas.
+
+Kategoriju filtrēšana un meklēšana darbojas vienlaikus.
+
+Piemēram, izvēloties kategoriju „Elektronika” un ierakstot meklēšanas laukā „telefons”, tiek parādīti tikai elektronikas kategorijas telefoni.
+
+## 8. Mantu fotogrāfijas (43)
+
+Katrai mantai iespējams pievienot fotogrāfiju.
+
+Fotogrāfijas atrašanās vieta tiek saglabāta tabulas `mantas` laukā `foto`.
+
+Atbalstītie formāti:
+- JPG.
+- JPEG.
+- PNG.
+
+Pievienojot fotogrāfiju:
+1. Lietotājs nospiež „Izvēlēties attēlu”.
+2. Atveras failu izvēles logs.
+3. Lietotājs izvēlas attēlu.
+4. Attēla atrašanās vieta tiek saglabāta datubāzē.
+
+Apskatot mantu, tās fotogrāfija tiek parādīta blakus informācijai.
+
+Fotogrāfiju var nomainīt vai noņemt.
+
+Ja attēla fails vairs nav pieejams, programma turpina darboties un parāda paziņojumu.
+
+## 9. Mantu rediģēšana (47)
+
+Administratoram ir iespēja rediģēt esošās mantas.
+
+Izvēloties mantu un nospiežot „Rediģēt mantu”, atveras forma ar jau aizpildītiem laukiem.
+
+Var mainīt:
+- Nosaukumu.
+- Aprakstu.
+- Kategoriju.
+- Atrašanās vietu.
+- Fotogrāfiju.
+
+Nospiežot „Saglabāt”:
+1. Programma pārbauda ievadīto informāciju.
+2. Atrod mantu pēc tās ID.
+3. Atjauno mainītos laukus datubāzē.
+4. Saglabā izmaiņas.
+5. Atjauno mantu sarakstu.
+
+Mantas ID un sākotnējais pievienošanas datums netiek mainīti.
+
+Nospiežot „Atcelt”, izmaiņas netiek saglabātas.
+
+## 10. Mantu dzēšana (46)
+
+Administratoram ir iespēja dzēst mantas.
+
+Izvēloties mantu un nospiežot „Dzēst mantu”, parādās apstiprinājuma logs.
+
+Ja administrators apstiprina dzēšanu:
+1. Programma atrod mantu pēc ID.
+2. Pārbauda, vai tai ir saistīti pieteikumi.
+3. Pārbauda datubāzes savstarpējās saites.
+4. Droši apstrādā saistītos pieteikumus.
+5. Dzēš mantas ierakstu.
+6. Atjauno mantu sarakstu.
+
+Ja administrators izvēlas „Nē”, nekas netiek dzēsts.
+
+Nedrīkst pieļaut situāciju, kurā datubāzē paliek pieteikumi, kas norāda uz neeksistējošu mantu.
+
+## 11. Pieteikumu datubāzes darbība
+
+Visi pieteikumi tiek glabāti tabulā `pieteikumi`.
+
+Katram pieteikumam ir:
+- `id` – unikāls pieteikuma ID.
+- `manta_id` – mantas ID, uz kuru lietotājs piesakās.
+- `lietotajs_id` – lietotāja ID, kurš izveidojis pieteikumu.
+- `pieradijums` – papildu pierādījums vai informācija.
+- `datums` – pieteikuma izveidošanas datums.
+- `apstiprinats` – apstiprinājuma lauks.
+- `statuss` – pieteikuma statuss.
+
+Katrs pieteikums ir saistīts ar vienu lietotāju un vienu mantu.
+
+Izmantojot šīs saites, programma var parādīt mantas nosaukumu un lietotāja vārdu, nevis tikai ID numurus.
+
+## 12. Pieteikuma izveidošana
+
+Lietotājs nospiež „Izveidot pieteikumu”.
+
+Atveras forma, kurā jānorāda mantas ID.
+
+Pašreizējā lietotāja ID programma iegūst automātiski.
+
+Pirms saglabāšanas tiek pārbaudīts:
+- Vai manta eksistē.
+- Vai lietotājs eksistē.
+- Vai manta ir pieejama.
+- Vai lietotājam jau nav aktīva pieteikuma uz šo mantu.
+
+Ja pārbaudes ir veiksmīgas:
+1. Tiek izveidots jauns pieteikuma ID.
+2. Tiek saglabāts mantas ID.
+3. Tiek saglabāts lietotāja ID.
+4. Tiek ievietots pašreizējais datums.
+5. Statuss tiek iestatīts uz „Gaida”.
+6. Pieteikums tiek saglabāts datubāzē.
+
+Pēc veiksmīgas saglabāšanas lietotājs saņem paziņojumu.
+
+## 13. Pieteikumu apskate
+
+Nospiežot „Redzēt pieteikumus”, atveras pieteikumu saraksts.
+
+Administratoram redzami visi pieteikumi.
+
+Parastajam lietotājam redzami tikai viņa paša pieteikumi.
+
+Tabulā redzams:
+- Pieteikuma ID.
+- Mantas nosaukums.
+- Lietotāja vārds un uzvārds.
+- Pieteikuma datums.
+- Pieteikuma statuss.
+
+Šī informācija tiek iegūta, savienojot tabulas `pieteikumi`, `mantas` un `lietotaji`.
+
+## 14. Pieteikumu statusi (45)
+
+Katram pieteikumam ir viens no trim statusiem:
+
+| Statuss | Nozīme |
 |---|---|
-| `kategorijas` | id, nosaukums |
-| `lietotaji` | id, vards, uzvards, epasts, klase, loma |
-| `mantas` | id, nosaukums, apraksts, kategorija_id → kategorijas, vieta, datums, statuss, pievienoja_id → lietotaji, foto |
-| `pazaudetas` | id, lietotajs_id → lietotaji, kategorija_id → kategorijas, vieta, apraksts, datums |
-| `pieteikumi` | id, manta_id → mantas, lietotajs_id → lietotaji, pieradijums, datums, apstiprinats |
+| Gaida | Pieteikums vēl nav izskatīts |
+| Apstiprināts | Administrators ir apstiprinājis pieteikumu |
+| Noraidīts | Administrators ir noraidījis pieteikumu |
 
-**Piezīme:** Lai ieviestu jaunos pieteikumu statusus, datubāzes tabula `pieteikumi` būs jāpapildina ar atsevišķu statusa lauku. Pārējās jaunās funkcijas izmantos esošās datubāzes tabulas un laukus, vajadzības gadījumā tos papildinot.
+Jauns pieteikums automātiski saņem statusu „Gaida”.
+
+Administrators var izvēlēties pieteikumu un nospiest:
+- „Apstiprināt”.
+- „Noraidīt”.
+
+Pēc izvēles programma atrod pieteikumu pēc ID un maina tā statusu datubāzē.
+
+### Pieteikuma apstiprināšana
+
+Apstiprinot pieteikumu:
+1. Programma pārbauda, vai manta joprojām ir pieejama.
+2. Pārbauda, vai tai nav cita apstiprināta pieteikuma.
+3. Maina pieteikuma statusu uz „Apstiprināts”.
+4. Maina mantas statusu uz „Atdota”.
+5. Saglabā abas izmaiņas datubāzē vienas transakcijas ietvaros.
+
+Ja kāda darbība neizdodas, abas izmaiņas tiek atceltas.
+
+Vienai mantai var būt tikai viens apstiprināts pieteikums.
+
+Pārējie pieteikumi uz šo mantu vairs nevar tikt apstiprināti.
+
+### Pieteikuma noraidīšana
+
+Noraidot pieteikumu:
+1. Programma atrod konkrēto pieteikumu.
+2. Maina tā statusu uz „Noraidīts”.
+3. Saglabā izmaiņas datubāzē.
+4. Atjauno pieteikumu sarakstu.
+
+Ja manta vēl nav atdota un tai nav cita apstiprināta pieteikuma, tā paliek pieejama.
+
+## 15. Pieteikumu dzēšana (46)
+
+Administratoram ir iespēja dzēst pieteikumus.
+
+Izvēloties pieteikumu un nospiežot „Dzēst pieteikumu”, parādās apstiprinājuma logs.
+
+Pēc apstiprināšanas:
+1. Programma atrod pieteikumu pēc ID.
+2. Pārbauda tā statusu.
+3. Dzēš pieteikuma ierakstu.
+4. Pārbauda saistītās mantas statusu.
+5. Atjauno pieteikumu sarakstu.
+
+Lietotāja un mantas ieraksti netiek dzēsti kopā ar pieteikumu.
+
+Ja tiek dzēsts apstiprināts pieteikums, manta automātiski nekļūst pieejama, jo tas nenozīmē, ka manta ir fiziski atgriezta.
+
+## 16. Lietotāju pārvaldība
+
+Lietotāji tiek glabāti tabulā `lietotaji`.
+
+Tabulas lauki:
+- `id` – lietotāja ID.
+- `vards` – vārds.
+- `uzvards` – uzvārds.
+- `epasts` – e-pasts.
+- `klase` – klase.
+- `loma` – lietotāja loma.
+
+### Lietotāja pievienošana
+
+Administrators nospiež „Pievienot lietotāju”.
+
+Atveras forma ar laukiem:
+- Vārds.
+- Uzvārds.
+- E-pasts.
+- Klase.
+- Loma.
+
+Pēc saglabāšanas programma:
+1. Pārbauda, vai obligātie lauki ir aizpildīti.
+2. Pārbauda e-pasta formātu.
+3. Pārbauda izvēlēto lomu.
+4. Izveido jaunu lietotāja ID.
+5. Saglabā lietotāju tabulā `lietotaji`.
+
+Jaunais lietotājs parādās lietotāju izvēles logā.
+
+## 17. Kategoriju pārvaldība
+
+Kategorijas tiek glabātas tabulā `kategorijas`.
+
+Katram ierakstam ir:
+- `id` – kategorijas ID.
+- `nosaukums` – kategorijas nosaukums.
+
+Administrators nospiež „Pievienot kategoriju”.
+
+Atveras logs ar lauku „Nosaukums”.
+
+Pēc saglabāšanas:
+1. Tiek pārbaudīts, vai nosaukums nav tukšs.
+2. Tiek pārbaudīts, vai tāda kategorija jau neeksistē.
+3. Tiek izveidots jauns kategorijas ieraksts.
+4. Kategorija tiek saglabāta datubāzē.
+
+Jaunā kategorija uzreiz ir pieejama mantu pievienošanas un rediģēšanas formās.
+
+## 18. Datubāzes struktūra
+
+Datubāzes nosaukums ir `mantas.db`.
+
+### Tabula `kategorijas`
+
+| Lauks | Nozīme |
+|---|---|
+| id | Kategorijas ID |
+| nosaukums | Kategorijas nosaukums |
+
+### Tabula `lietotaji`
+
+| Lauks | Nozīme |
+|---|---|
+| id | Lietotāja ID |
+| vards | Vārds |
+| uzvards | Uzvārds |
+| epasts | E-pasts |
+| klase | Klase |
+| loma | Loma |
+
+### Tabula `mantas`
+
+| Lauks | Nozīme |
+|---|---|
+| id | Mantas ID |
+| nosaukums | Mantas nosaukums |
+| apraksts | Apraksts |
+| kategorija_id | Kategorijas ID |
+| vieta | Atrašanās vieta |
+| datums | Pievienošanas datums |
+| statuss | Mantas statuss |
+| pievienoja_id | Pievienotāja ID |
+| foto | Fotogrāfijas ceļš |
+
+### Tabula `pazaudetas`
+
+| Lauks | Nozīme |
+|---|---|
+| id | Ieraksta ID |
+| lietotajs_id | Lietotāja ID |
+| kategorija_id | Kategorijas ID |
+| vieta | Pazaudēšanas vieta |
+| apraksts | Apraksts |
+| datums | Datums |
+
+### Tabula `pieteikumi`
+
+| Lauks | Nozīme |
+|---|---|
+| id | Pieteikuma ID |
+| manta_id | Mantas ID |
+| lietotajs_id | Lietotāja ID |
+| pieradijums | Pierādījums |
+| datums | Pieteikuma datums |
+| apstiprinats | Apstiprinājuma lauks |
+| statuss | Pieteikuma statuss |
+
+### Tabulu savstarpējās attiecības
+
+- Vienai kategorijai var būt vairākas mantas.
+- Vienam lietotājam var būt pievienotas vairākas mantas.
+- Vienam lietotājam var būt vairāki pieteikumi.
+- Vienai mantai var būt vairāki pieteikumi.
+- Katrs pieteikums pieder vienam lietotājam un vienai mantai.
+- Katra manta pieder vienai kategorijai.
+
+Datubāzes saites nodrošina, ka pieteikumi, lietotāji, mantas un kategorijas ir savstarpēji saistīti.
+
+## 19. Datubāzes drošība un datu saglabāšana
+
+Visas izmaiņas tiek saglabātas datubāzē.
+
+Programmai jānodrošina:
+- Neeksistējošu lietotāju un mantu ID izmantošanas novēršana.
+- Nederīgu kategoriju izmantošanas novēršana.
+- Tukšu obligāto lauku novēršana.
+- Vienas mantas vairākkārtējas nodošanas novēršana.
+- Nederīgu pieteikumu novēršana.
+- Saistīto ierakstu droša dzēšana.
+
+Ja viena darbība maina vairākus savstarpēji saistītus ierakstus, piemēram, apstiprinot pieteikumu un mainot mantas statusu, abas izmaiņas jāsaglabā vienas datubāzes transakcijas ietvaros.
+
+Ja darbība neizdodas, izmaiņas tiek atceltas.
+
+Aizverot un atkārtoti atverot programmu, iepriekš saglabātā informācija paliek datubāzē.
+
+## 20. Gala rezultāta prognoze
+
+Pēc visu aprakstīto funkciju ieviešanas aplikācija būs pilnvērtīga pazudušo un atrasto mantu uzskaites sistēma.
+
+Parastais lietotājs varēs:
+- Apskatīt atrastās mantas.
+- Ātri atrast sev nepieciešamo mantu.
+- Apskatīt mantu fotogrāfijas.
+- Izveidot pieteikumu.
+- Sekot līdzi pieteikuma statusam.
+
+Administrators varēs:
+- Pārvaldīt visas mantas.
+- Pievienot un rediģēt informāciju.
+- Pārvaldīt lietotājus un kategorijas.
+- Izskatīt pieteikumus.
+- Kontrolēt mantu pieejamību.
+
+**Prognozētais gala rezultāts:** vienkārša, pārskatāma un praktiski izmantojama aplikācija, kas ļaus vienuviet reģistrēt atrastās mantas, palīdzēs to īpašniekiem tās atgūt un nodrošinās administratoram pilnīgu pārskatu par mantām un to pieteikumiem.
+
+Sistēmas galvenais ieguvums būs centralizēta datu glabāšana un skaidra mantu aprites kontrole — no mantas pievienošanas līdz tās nodošanai īpašniekam.
